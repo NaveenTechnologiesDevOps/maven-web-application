@@ -1,0 +1,39 @@
+node('master')
+{
+    def mavenHome = tool name: "maven3.6.3"
+    properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '2', daysToKeepStr: '', numToKeepStr: '2')), pipelineTriggers([pollSCM('* * * * *')])])
+    stage("CheckoutCode")
+    {
+        git branch: 'development', credentialsId: 'cacb6007-d2d3-4526-9209-00ac86b0de2a', url: 'https://github.com/NaveenTechnologiesDevOps/maven-web-application.git'
+    }
+    stage("BuildthePackage")
+    {
+        sh "${mavenHome}/bin/mvn clean package"
+    }
+    /*
+    stage("SonarQubeReportExecution")
+    {
+        sh "${mavenHome}/bin/mvn sonar:sonar"
+    }
+    stage("UploadArtifactstoNexus")
+    {
+        sh "${mavenHome}/bin/mvn deploy"
+    }
+    stage("DeploytoContainer")
+    {
+        sshagent(['b9c80949-d1ce-445f-9bb9-c4b34b7f4f31']) {
+        sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@13.233.6.37:/opt/apache-tomcat-9.0.43/webapps/" 
+        }
+    }
+    stage("EmailNotification")
+    {
+        mail bcc: 'naveenleo91@gmail.com', body: '''The Build Status is ""
+
+        Thank you,
+        With Regards,
+        Naveen Technologies
+        Ph No.
+        ''', cc: 'naveenleo91@gmail.com', from: '', replyTo: '', subject: 'Buld Status', to: 'naveenleo91@gmail.com'
+    }
+    */
+}
